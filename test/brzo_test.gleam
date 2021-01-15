@@ -1,42 +1,60 @@
-import brzo as b
+import brzo
 import gleam/should
 
-const exp = b.Cat(
-  left: b.Star(exp: b.Union(left: b.Symbol("f"), right: b.Symbol("a"))),
-  right: b.Star(exp: b.Cat(left: b.Symbol("r"), right: b.Symbol("s"))),
+const exp = brzo.Cat(
+  left: brzo.Star(
+    exp: brzo.Union(left: brzo.Symbol("f"), right: brzo.Symbol("a")),
+  ),
+  right: brzo.Star(
+    exp: brzo.Cat(left: brzo.Symbol("r"), right: brzo.Symbol("s")),
+  ),
 )
 
 pub fn empty_match_test() {
-  b.is_match(exp, "")
+  brzo.is_match(exp, "")
   |> should.be_true()
 }
 
 pub fn no_match_test() {
-  b.is_match(exp, "x")
+  brzo.is_match(exp, "x")
   |> should.be_false()
 }
 
 pub fn union_test() {
-  b.is_match(exp, "f")
+  brzo.is_match(exp, "f")
   |> should.be_true()
 
-  b.is_match(exp, "a")
+  brzo.is_match(exp, "a")
   |> should.be_true()
 }
 
 pub fn star_test() {
-  b.is_match(exp, "ff")
+  brzo.is_match(exp, "ff")
   |> should.be_true()
 
-  b.is_match(exp, "aa")
+  brzo.is_match(exp, "aa")
   |> should.be_true()
 
-  b.is_match(exp, "fa")
+  brzo.is_match(exp, "fa")
   |> should.be_true()
 
-  b.is_match(exp, "af")
+  brzo.is_match(exp, "af")
   |> should.be_true()
 
-  b.is_match(exp, "afx")
+  brzo.is_match(exp, "afx")
   |> should.be_false()
+}
+
+pub fn cat_test() {
+  brzo.is_match(exp, "rs")
+  |> should.be_true()
+
+  brzo.is_match(exp, "rsrs")
+  |> should.be_true()
+
+  brzo.is_match(exp, "rsr")
+  |> should.be_false()
+
+  brzo.is_match(exp, "ffaarsrsrs")
+  |> should.be_true()
 }
